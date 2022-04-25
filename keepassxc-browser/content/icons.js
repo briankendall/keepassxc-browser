@@ -11,7 +11,7 @@ kpxcIcons.iconTypes = { USERNAME: 0, PASSWORD: 1, TOTP: 2 };
 // Adds an icon to input field
 kpxcIcons.addIcon = async function(field, iconType) {
     if (!field || iconType < 0 || iconType > 2) {
-        return;
+        return null;
     }
 
     let iconSet = false;
@@ -32,6 +32,7 @@ kpxcIcons.addIcon = async function(field, iconType) {
             iconType: iconType
         });
     }
+    return null;
 };
 
 // Adds all necessary icons to a saved form
@@ -51,6 +52,7 @@ kpxcIcons.addIconsFromForm = async function(form) {
                 kpxcIcons.addIcon(c.password, kpxcIcons.iconTypes.USERNAME);
             }
         }
+        return null;
     };
 
     const addPasswordIcons = async function(c) {
@@ -61,12 +63,14 @@ kpxcIcons.addIconsFromForm = async function(form) {
                 kpxcIcons.addIcon(input, kpxcIcons.iconTypes.PASSWORD);
             }
         }
+        return null;
     };
 
     const addTOTPIcons = async function(c) {
         if (c.totp && kpxc.settings.showOTPIcon) {
             kpxcIcons.addIcon(c.totp, kpxcIcons.iconTypes.TOTP);
         }
+        return null;
     };
 
     await Promise.all([
@@ -74,6 +78,7 @@ kpxcIcons.addIconsFromForm = async function(form) {
         await addPasswordIcons(form),
         await addTOTPIcons(form)
     ]);
+    return null;
 };
 
 // Delete all icons that have been hidden from the page view
@@ -86,7 +91,7 @@ kpxcIcons.deleteHiddenIcons = function() {
 // Initializes all icons needed to be shown
 kpxcIcons.initIcons = async function(combinations = []) {
     if (combinations.length === 0) {
-        return;
+        return null;
     }
 
     for (const form of kpxcForm.savedForms) {
@@ -101,6 +106,7 @@ kpxcIcons.initIcons = async function(combinations = []) {
 
         await kpxcIcons.addIconsFromForm(c);
     }
+    return null;
 };
 
 kpxcIcons.hasIcon = function(field) {

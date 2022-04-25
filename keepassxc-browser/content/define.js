@@ -62,6 +62,7 @@ kpxcDefine.init = async function() {
     };
 
     document.addEventListener('keydown', kpxcDefine.keyDown);
+    return null;
 };
 
 kpxcDefine.close = function() {
@@ -401,7 +402,7 @@ kpxcDefine.more = function() {
 
 kpxcDefine.confirm = async function() {
     if (kpxcDefine.dataStep !== 4) {
-        return;
+        return null;
     }
 
     if (!kpxc.settings['defined-custom-fields']) {
@@ -435,11 +436,12 @@ kpxcDefine.confirm = async function() {
 
     await sendMessage('save_settings', kpxc.settings);
     kpxcDefine.close();
+    return null;
 };
 
 kpxcDefine.discard = async function() {
     if (!kpxcDefine.buttons.discard) {
-        return;
+        return null;
     }
 
     const location = kpxc.getDocumentLocation();
@@ -449,6 +451,7 @@ kpxcDefine.discard = async function() {
     await sendMessage('load_settings');
 
     kpxcDefine.discardSection.remove();
+    return null;
 };
 
 // Handle keyboard events

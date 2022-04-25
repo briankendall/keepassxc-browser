@@ -113,7 +113,7 @@ kpxcForm.init = function(form, credentialFields) {
 // Triggers when form is submitted. Shows the credential banner
 kpxcForm.onSubmit = async function(e) {
     if (!e.isTrusted) {
-        return;
+        return null;
     }
 
     const searchForm = f => {
@@ -137,7 +137,7 @@ kpxcForm.onSubmit = async function(e) {
 
     if (!form) {
         logDebug('Error: No form found for submit detection.');
-        return;
+        return null;
     }
 
     const [ usernameField, passwordField, passwordInputs ] = kpxcForm.getCredentialFieldsFromForm(form);
@@ -161,7 +161,7 @@ kpxcForm.onSubmit = async function(e) {
 
     // Return if credentials are already found
     if (kpxc.credentials.some(c => c.login === usernameValue && c.password === passwordValue)) {
-        return;
+        return null;
     }
 
     if (passwordField) {
@@ -173,6 +173,7 @@ kpxcForm.onSubmit = async function(e) {
 
     // Show the banner if the page does not reload
     kpxc.rememberCredentials(usernameValue, passwordValue);
+    return null;
 };
 
 // Save form to Object array

@@ -54,6 +54,7 @@ kpxc.addToSitePreferences = async function() {
 
     await sendMessage('save_settings', kpxc.settings);
     sendMessage('username_field_detected', false);
+    return null;
 };
 
 // Clears all from the content and background scripts, including autocomplete
@@ -117,6 +118,7 @@ kpxc.detectDatabaseChange = async function(response) {
             kpxcIcons.switchIcons();
         }
     }
+    return null;
 };
 
 // Get location URL by domain or full URL
@@ -225,6 +227,7 @@ kpxc.ignoreSite = async function(sites) {
     }
 
     await sendMessage('save_settings', kpxc.settings);
+    return null;
 };
 
 // Initialize autocomplete for username fields
@@ -294,16 +297,17 @@ kpxc.initCredentialFields = async function() {
         // Run 'redetect_credentials' manually if no fields are found after a page load
         setTimeout(async function() {
             if (_called.automaticRedetectCompleted) {
-                return;
+                return null;
             }
 
             if (kpxc.inputs.length === 0 || kpxc.combinations.length === 0) {
                 kpxc.initCredentialFields();
             }
             _called.automaticRedetectCompleted = true;
+            return null;
         }, 2000);
 
-        return;
+        return null;
     }
 
     // Combine inputs
@@ -432,16 +436,17 @@ kpxc.passwordFilledWithExceptions = async function(currentForm) {
 kpxc.prepareCredentials = async function() {
     if (kpxc.credentials.length === 0) {
         logDebug('Error: No combination found.');
-        return;
+        return null;
     }
 
     if (kpxc.settings.autoFillSingleEntry && kpxc.credentials.length === 1) {
         kpxcFill.fillFromAutofill();
-        return;
+        return null;
     }
 
     kpxc.initLoginPopup();
     kpxc.initAutocomplete();
+    return null;
 };
 
 /**
@@ -456,7 +461,7 @@ kpxc.rememberCredentials = async function(usernameValue, passwordValue, urlValue
     const credentials = (oldCredentials !== undefined && oldCredentials.length > 0) ? oldCredentials : kpxc.credentials;
     if (passwordValue === '') {
         logDebug('Error: Empty password.');
-        return undefined;
+        return null;
     }
 
     let usernameExists = false;
@@ -528,14 +533,14 @@ kpxc.rememberCredentials = async function(usernameValue, passwordValue, urlValue
 kpxc.rememberCredentialsFromContextMenu = async function() {
     const el = document.activeElement;
     if (el.nodeName !== 'INPUT') {
-        return;
+        return null;
     }
 
     const type = el.getAttribute('type');
     const combination = await kpxcFields.getCombination(el, (type === 'password' ? type : 'username'));
     if (!combination) {
         logDebug('Error: No combination found.');
-        return;
+        return null;
     }
 
     const usernameValue = combination.username ? combination.username.value : '';
@@ -544,12 +549,13 @@ kpxc.rememberCredentialsFromContextMenu = async function() {
     const result = await kpxc.rememberCredentials(usernameValue, passwordValue, undefined, undefined, kpxc.settings.showLoginNotifications);
     if (result === undefined) {
         kpxcUI.createNotification('error', tr('rememberNoPassword'));
-        return;
+        return null;
     }
 
     if (!result) {
         kpxcUI.createNotification('warning', tr('rememberCredentialsExists'));
     }
+    return null;
 };
 
 // The basic function for retrieving credentials from KeePassXC.
@@ -561,6 +567,7 @@ kpxc.retrieveCredentials = async function(force = false) {
     if (kpxc.settings.autoRetrieveCredentials && kpxc.url && kpxc.submitUrl) {
         await kpxc.retrieveCredentialsCallback(await sendMessage('retrieve_credentials', [ kpxc.url, kpxc.submitUrl, force ]));
     }
+    return null;
 };
 
 // Handles credentials from 'retrieve_credentials' response
@@ -583,6 +590,7 @@ kpxc.retrieveCredentialsCallback = async function(credentials) {
         await sendMessage('page_clear_submitted');
         kpxc.rememberCredentials(creds.username, creds.password, creds.url, creds.oldCredentials);
     }
+    return null;
 };
 
 // If credentials are not received, request them again
@@ -687,6 +695,7 @@ kpxc.triggerActivatedTab = async function() {
     } else if (kpxc.credentials.length > 0) {
         kpxc.initLoginPopup();
     }
+    return null;
 };
 
 // Updates the database state to the content script
@@ -699,6 +708,7 @@ kpxc.updateDatabaseState = async function() {
     }
 
     kpxc.databaseState = res.databaseClosed ? DatabaseState.LOCKED : DatabaseState.UNLOCKED;
+    return null;
 };
 
 // Updates the TOTP Autocomplete Menu
@@ -707,7 +717,7 @@ kpxc.updateTOTPList = async function() {
     if (uuid === undefined || kpxc.credentials.length === 0) {
         // Credential haven't been selected
         logDebug('Error: No credentials selected for TOTP.');
-        return;
+        return null;
     }
 
     // Use the first credential available if not set
@@ -779,6 +789,7 @@ const initContentScript = async function() {
     } catch (err) {
         logError('initContentScript error: ' + err);
     }
+    return null;
 };
 
 if (document.readyState === 'complete' || (document.readyState !== 'loading' && !document.documentElement.doScroll)) {
@@ -842,4 +853,5 @@ browser.runtime.onMessage.addListener(async function(req, sender) {
             sendMessage('request_autotype', [ window.location.hostname ]);
         }
     }
+    return null;
 });

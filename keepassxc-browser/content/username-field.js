@@ -114,13 +114,13 @@ const iconClicked = async function(field, icon) {
     if (!kpxcFields.isVisible(field)) {
         icon.parentNode.removeChild(icon);
         field.removeAttribute('kpxc-username-field');
-        return;
+        return null;
     }
 
     const connected = await sendMessage('is_connected');
     if (!connected) {
         kpxcUI.createNotification('error', tr('errorNotConnected'));
-        return;
+        return null;
     }
 
     const databaseHash = await sendMessage('check_database_hash');
@@ -134,6 +134,7 @@ const iconClicked = async function(field, icon) {
     if (icon.className.includes('unlock')) {
         fillCredentials(field);
     }
+    return null;
 };
 
 const getIconClassName = function(state = DatabaseState.UNLOCKED) {
@@ -158,4 +159,5 @@ const getIconText = function(state) {
 const fillCredentials = async function(field) {
     const combination = await kpxcFields.getCombination(field);
     kpxcFill.fillFromUsernameIcon(combination);
+    return null;
 };

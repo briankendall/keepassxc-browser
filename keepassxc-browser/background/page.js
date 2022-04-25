@@ -188,7 +188,7 @@ page.initOpenedTabs = async function() {
 
 page.initSitePreferences = async function() {
     if (!page.settings) {
-        return;
+        return null;
     }
 
     if (!page.settings['sitePreferences']) {
@@ -196,6 +196,7 @@ page.initSitePreferences = async function() {
     }
 
     await browser.storage.local.set({ 'settings': page.settings });
+    return null;
 };
 
 page.switchTab = async function(tab) {
@@ -219,11 +220,12 @@ page.switchTab = async function(tab) {
     browser.tabs.sendMessage(tab.id, { action: 'activated_tab' }).catch((e) => {
         logError('Cannot send activated_tab message: ' + e.message);
     });
+    return null;
 };
 
 page.clearCredentials = async function(tabId, complete) {
     if (!page.tabs[tabId]) {
-        return;
+        return null;
     }
 
     page.passwordFilled = false;
@@ -236,6 +238,7 @@ page.clearCredentials = async function(tabId, complete) {
             action: 'clear_credentials'
         }).catch((e) => {});
     }
+    return null;
 };
 
 page.clearLogins = function(tabId) {
@@ -270,6 +273,7 @@ page.setSubmittedCredentials = function(submitted, username, password, url, oldC
 page.clearSubmittedCredentials = async function() {
     page.submitted = false;
     page.submittedCredentials = {};
+    return null;
 };
 
 page.createTabEntry = function(tabId) {
@@ -319,6 +323,7 @@ page.getLoginId = async function(tab) {
 
 page.setLoginId = async function(tab, loginId) {
     page.tabs[tab.id].loginId = loginId;
+    return null;
 };
 
 page.getManualFill = async function(tab) {
@@ -341,6 +346,7 @@ page.getSubmitted = async function(tab) {
 page.setSubmitted = async function(tab, args = []) {
     const [ submitted, username, password, url, oldCredentials ] = args;
     page.setSubmittedCredentials(submitted, username, password, url, oldCredentials, tab.id);
+    return null;
 };
 
 // Update context menu for attribute filling
@@ -374,6 +380,7 @@ page.updateContextMenu = async function(tab, credentials) {
             }));
         }
     }
+    return null;
 };
 
 const createContextMenuItem = function({action, args, ...options}) {

@@ -10,7 +10,7 @@ kpxcBanner.wrapper = undefined;
 
 kpxcBanner.destroy = async function() {
     if (!kpxcBanner.created) {
-        return;
+        return null;
     }
 
     kpxcBanner.created = false;
@@ -28,24 +28,25 @@ kpxcBanner.destroy = async function() {
     } else {
         window.parent.document.body.removeChild(window.parent.document.body.querySelector('#kpxc-banner'));
     }
+    return null;
 };
 
 kpxcBanner.create = async function(credentials = {}) {
     const connectedDatabase = await sendMessage('get_connected_database');
     if (!kpxc.settings.showLoginNotifications || kpxcBanner.created || connectedDatabase.identifier === null) {
-        return;
+        return null;
     }
 
     // Check if database is closed
     const state = await sendMessage('check_database_hash');
     if (state === '') {
         //kpxcUI.createNotification('error', tr('rememberErrorDatabaseClosed'));
-        return;
+        return null;
     }
 
     // Don't show anything if the site is in the ignore
     if (await kpxc.siteIgnored(IGNORE_NORMAL)) {
-        return;
+        return null;
     }
 
     credentials.username = credentials.username.trim();
@@ -81,21 +82,21 @@ kpxcBanner.create = async function(credentials = {}) {
 
     newButton.addEventListener('click', function(e) {
         if (!e.isTrusted) {
-            return;
+            return null;
         }
         kpxcBanner.saveNewCredentials(credentials);
     });
 
     updateButton.addEventListener('click', function(e) {
         if (!e.isTrusted) {
-            return;
+            return null;
         }
         kpxcBanner.updateCredentials(credentials);
     });
 
     dismissButton.addEventListener('click', function(e) {
         if (!e.isTrusted) {
-            return;
+            return null;
         }
 
         // If a banner dialog is shown, display the main banner
@@ -138,6 +139,7 @@ kpxcBanner.create = async function(credentials = {}) {
         window.parent.document.body.appendChild(wrapper);
         kpxcBanner.created = true;
     }
+    return null;
 };
 
 kpxcBanner.saveNewCredentials = async function(credentials = {}) {
@@ -145,19 +147,20 @@ kpxcBanner.saveNewCredentials = async function(credentials = {}) {
         const args = [ creds.username, creds.password, creds.url ];
         const res = await sendMessage('add_credentials', args);
         kpxcBanner.verifyResult(res);
+        return null;
     };
 
     const result = await sendMessage('get_database_groups');
     if (!result || !result.groups) {
         logError('Empty result from get_database_groups');
         await saveToDefaultGroup(credentials);
-        return;
+        return null;
     }
 
     if (!result.defaultGroupAlwaysAsk) {
         if (result.defaultGroup === '' || result.defaultGroup === DEFAULT_BROWSER_GROUP) {
             await saveToDefaultGroup(credentials);
-            return;
+            return null;
         } else {
             // A specified group is used
             let gname = '';
@@ -179,13 +182,13 @@ kpxcBanner.saveNewCredentials = async function(credentials = {}) {
                         kpxcUI.createNotification('error', tr('rememberErrorCreatingNewGroup'));
                     }
 
-                    return;
+                    return null;
                 }
             }
 
             const res = await sendMessage('add_credentials', [ credentials.username, credentials.password, credentials.url, gname, guuid ]);
             kpxcBanner.verifyResult(res);
-            return;
+            return null;
         }
     }
 
@@ -212,11 +215,12 @@ kpxcBanner.saveNewCredentials = async function(credentials = {}) {
         a.addEventListener('click', async function(e) {
             e.preventDefault();
             if (!e.isTrusted) {
-                return;
+                return null;
             }
 
             const res = await sendMessage('add_credentials', [ credentials.username, credentials.password, credentials.url, group, groupUuid ]);
             kpxcBanner.verifyResult(res);
+            return null;
         });
 
         if (hasChildren) {
@@ -238,6 +242,7 @@ kpxcBanner.saveNewCredentials = async function(credentials = {}) {
     }
 
     kpxcBanner.shadowSelector('.kpxc-banner-dialog').style.display = 'block';
+    return null;
 };
 
 kpxcBanner.updateCredentials = async function(credentials = {}) {
@@ -268,7 +273,7 @@ kpxcBanner.updateCredentials = async function(credentials = {}) {
             a.addEventListener('click', function(e) {
                 e.preventDefault();
                 if (!e.isTrusted) {
-                    return;
+                    return null;
                 }
 
                 const entryId = e.target.getAttribute('entryId');
@@ -288,7 +293,7 @@ kpxcBanner.updateCredentials = async function(credentials = {}) {
                 }).then(async creds => {
                     if (!creds || creds.length !== credentials.list.length) {
                         kpxcBanner.verifyResult('error');
-                        return;
+                        return null;
                     }
 
                     const res = await sendMessage('update_credentials', [ credentials.list[entryId].uuid, credentials.username, credentials.password, credentials.url ]);
@@ -305,6 +310,7 @@ kpxcBanner.updateCredentials = async function(credentials = {}) {
 
         kpxcBanner.shadowSelector('.kpxc-banner-dialog').style.display = 'block';
     }
+    return null;
 };
 
 kpxcBanner.verifyResult = async function(code) {
@@ -322,6 +328,7 @@ kpxcBanner.verifyResult = async function(code) {
         kpxcUI.createNotification('error', tr('rememberErrorDatabaseClosed'));
     }
     kpxcBanner.destroy();
+    return null;
 };
 
 // Traverse the groups and ensure all paths are found
@@ -377,6 +384,7 @@ kpxcBanner.createCredentialDialog = async function() {
     dialog.appendMultiple(databaseText, usernameNew, usernameExists, chooseCreds, list);
     initColorTheme(dialog);
     kpxcBanner.banner.appendChild(dialog);
+    return null;
 };
 
 kpxcBanner.createGroupDialog = function() {

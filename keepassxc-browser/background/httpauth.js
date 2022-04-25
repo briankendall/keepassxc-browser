@@ -57,7 +57,7 @@ httpAuth.retrieveCredentials = async function(tabId, url, submitUrl) {
 httpAuth.processPendingCallbacks = async function(details, resolve, reject) {
     if (httpAuth.requests.indexOf(details.requestId) >= 0 || !page.tabs[details.tabId]) {
         reject({ cancel: false });
-        return;
+        return null;
     }
 
     httpAuth.requests.push(details.requestId);
@@ -74,6 +74,7 @@ httpAuth.processPendingCallbacks = async function(details, resolve, reject) {
 
     const logins = await httpAuth.retrieveCredentials({ 'id': details.tabId }, details.searchUrl, details.searchUrl);
     httpAuth.loginOrShowCredentials(logins, details, resolve, reject);
+    return null;
 };
 
 httpAuth.loginOrShowCredentials = function(logins, details, resolve, reject) {

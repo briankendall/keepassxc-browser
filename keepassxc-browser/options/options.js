@@ -57,6 +57,7 @@ options.saveSetting = async function(name) {
     await browser.runtime.sendMessage({
         action: 'load_settings'
     });
+    return null;
 };
 
 options.saveSettings = async function() {
@@ -73,6 +74,7 @@ options.saveKeyRing = async function() {
     await browser.runtime.sendMessage({
         action: 'load_keyring'
     });
+    return null;
 };
 
 options.initGeneralSettings = function() {
@@ -92,6 +94,7 @@ options.initGeneralSettings = function() {
             const message = updated.autoReconnect ? 'enable_automatic_reconnect' : 'disable_automatic_reconnect';
             browser.runtime.sendMessage({ action: message });
         }
+        return null;
     };
 
     const changeRadioValue = function(e) {
@@ -146,20 +149,23 @@ options.initGeneralSettings = function() {
         localStorage.setItem('colorTheme', options.settings['colorTheme']);
         await options.saveSettings();
         location.reload();
+        return null;
     });
 
     $('#tab-general-settings select#credentialSorting').addEventListener('change', async function(e) {
         options.settings['credentialSorting'] = e.currentTarget.value;
         await options.saveSettings();
+        return null;
     });
 
     $('#tab-general-settings input#clearCredentialTimeout').addEventListener('change', async function(e) {
         if (e.target.valueAsNumber < 0 || e.target.valueAsNumber > 3600) {
-            return;
+            return null;
         }
 
         options.settings['clearCredentialsTimeout'] = e.target.valueAsNumber;
         await options.saveSettings();
+        return null;
     });
 
     // Change label text dynamically with the range input
@@ -172,6 +178,7 @@ options.initGeneralSettings = function() {
     $('#tab-general-settings input[type=range]').addEventListener('change', async function(e) {
         options.settings['redirectAllowance'] = e.target.valueAsNumber;
         await options.saveSettings();
+        return null;
     });
 
     browser.runtime.sendMessage({
@@ -208,12 +215,14 @@ options.initGeneralSettings = function() {
         const value = $('#defaultGroup').value;
         options.settings['defaultGroup'] = (value.length > 0 ? value : '');
         await options.saveSettings();
+        return null;
     });
 
     $('#defaultGroupButtonReset').addEventListener('click', async function() {
         $('#defaultGroup').value = '';
         options.settings['defaultGroup'] = '';
         await options.saveSettings();
+        return null;
     });
 
     let temporarySettings;
@@ -330,6 +339,7 @@ options.showKeePassXCVersions = async function(response) {
     if (!version270Result) {
         $('#tab-general-settings #downloadFaviconAfterSaveFormGroup').hide();
     }
+    return null;
 };
 
 options.getPartiallyHiddenKey = function(key) {
@@ -364,6 +374,7 @@ options.initConnectedDatabases = function() {
         });
 
         hideEmptyMessageRow();
+        return null;
     });
 
     const removeButtonClicked = function(e) {
@@ -424,6 +435,7 @@ options.initConnectedDatabases = function() {
                 addHashToTable(newHash);
             }
         }
+        return null;
     });
 
     hideEmptyMessageRow();

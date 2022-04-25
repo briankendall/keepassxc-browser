@@ -10,22 +10,23 @@ const kpxcFill = {};
 kpxcFill.fillAttributeToActiveElementWith = async function(attr) {
     const el = document.activeElement;
     if (el.nodeName !== 'INPUT' || kpxc.credentials.length === 0) {
-        return;
+        return null;
     }
 
     const value = Object.values(attr);
     if (!value || value.length === 0) {
-        return;
+        return null;
     }
 
     kpxc.setValue(el, value[0]);
+    return null;
 };
 
 // Fill requested from the context menu. Active element is used for combination detection
 kpxcFill.fillInFromActiveElement = async function(passOnly = false) {
     if (kpxc.credentials.length === 0) {
         logDebug('Error: Credential list is empty.');
-        return;
+        return null;
     }
 
     if (kpxc.combinations.length > 0 && kpxc.settings.autoCompleteUsernames) {
@@ -34,13 +35,13 @@ kpxcFill.fillInFromActiveElement = async function(passOnly = false) {
             : kpxc.combinations.find(c => c.username);
         if (!combination) {
             logDebug('Error: No combination found.');
-            return;
+            return null;
         }
 
         const field = passOnly ? combination.password : combination.username;
         if (!field) {
             logDebug('Error: No input field found.');
-            return;
+            return null;
         }
 
         // Set focus to the input field
@@ -49,12 +50,12 @@ kpxcFill.fillInFromActiveElement = async function(passOnly = false) {
         if (kpxc.credentials.length > 1) {
             // More than one credential -> show autocomplete list
             kpxcUserAutocomplete.showList(field);
-            return;
+            return null;
         } else {
             // Just one credential -> fill the first combination found
             await sendMessage('page_set_login_id', kpxc.credentials[0].uuid);
             kpxcFill.fillInCredentials(combination, kpxc.credentials[0].login, kpxc.credentials[0].uuid, passOnly);
-            return;
+            return null;
         }
     }
 
@@ -72,18 +73,19 @@ kpxcFill.fillInFromActiveElement = async function(passOnly = false) {
     // Do not allow filling password to a non-password field
     if (passOnly && combination && !combination.password) {
         kpxcUI.createNotification('warning', tr('fieldsNoPasswordField'));
-        return;
+        return null;
     }
 
     await sendMessage('page_set_login_id', kpxc.credentials[0].uuid);
     kpxcFill.fillInCredentials(combination, kpxc.credentials[0].login, kpxc.credentials[0].uuid, passOnly);
+    return null;
 };
 
 // Fill requested by Auto-Fill
 kpxcFill.fillFromAutofill = async function() {
     if (kpxc.credentials.length !== 1 || kpxc.combinations.length === 0) {
         logDebug('Error: Credential list is empty or contains more than one entry.');
-        return;
+        return null;
     }
 
     const index = kpxc.combinations.length - 1;
@@ -92,20 +94,21 @@ kpxcFill.fillFromAutofill = async function() {
 
     // Generate popup-list of usernames + descriptions
     sendMessage('popup_login', [ { text: `${kpxc.credentials[0].login} (${kpxc.credentials[0].name})`, uuid: kpxc.credentials[0].uuid } ]);
+    return null;
 };
 
 // Fill requested by selecting credentials from the popup
 kpxcFill.fillFromPopup = async function(id, uuid) {
     if (!kpxc.credentials.length === 0 || !kpxc.credentials[id] || kpxc.combinations.length === 0) {
         logDebug('Error: Credential list is empty.');
-        return;
+        return null;
     }
 
     await sendMessage('page_set_login_id', uuid);
     const selectedCredentials = kpxc.credentials.find(c => c.uuid === uuid);
     if (!selectedCredentials) {
         logError('Uuid not found: ', uuid);
-        return;
+        return null;
     }
 
     // For Google password field we need to do some special handling. The password field is actually in the
@@ -117,6 +120,7 @@ kpxcFill.fillFromPopup = async function(id, uuid) {
 
     kpxcFill.fillInCredentials(combination, selectedCredentials.login, uuid);
     kpxcUserAutocomplete.closeList();
+    return null;
 };
 
 // Fill requested from TOTP icon
@@ -126,28 +130,29 @@ kpxcFill.fillFromTOTP = async function(target) {
 
     if (credentialList && credentialList.length === 0) {
         kpxcUI.createNotification('warning', tr('credentialsNoTOTPFound'));
-        return;
+        return null;
     }
 
     if (credentialList && credentialList.length === 1) {
         kpxcFill.fillTOTPFromUuid(el, credentialList[0].uuid);
-        return;
+        return null;
     }
 
     kpxcTOTPAutocomplete.showList(el, true);
+    return null;
 };
 
 // Fill TOTP with matching uuid
 kpxcFill.fillTOTPFromUuid = async function(el, uuid) {
     if (!el || !uuid) {
         logDebug('Error: Element or uuid is empty');
-        return;
+        return null;
     }
 
     const user = kpxc.credentials.find(c => c.uuid === uuid);
     if (!user) {
         logDebug('Error: No entry found with uuid: ' + uuid);
-        return;
+        return null;
     }
 
     if (user.totp && user.totp.length > 0) {
@@ -155,7 +160,7 @@ kpxcFill.fillTOTPFromUuid = async function(el, uuid) {
         const totp = await sendMessage('get_totp', [ user.uuid, user.totp ]);
         if (!totp) {
             kpxcUI.createNotification('warning', tr('credentialsNoTOTPFound'));
-            return;
+            return null;
         }
 
         kpxcFill.setTOTPValue(el, totp);
@@ -168,19 +173,20 @@ kpxcFill.fillTOTPFromUuid = async function(el, uuid) {
             }
         }
     }
+    return null;
 };
 
 // Set normal or segmented TOTP value
 kpxcFill.setTOTPValue = function(elem, val) {
     if (kpxc.combinations.length === 0) {
         logDebug('Error: Credential list is empty.');
-        return;
+        return null;
     }
 
     for (const comb of kpxc.combinations) {
         if (comb.totpInputs && comb.totpInputs.length === 6) {
             kpxcFill.fillSegmentedTotp(elem, val, comb.totpInputs);
-            return;
+            return null;
         }
     }
 
@@ -203,14 +209,15 @@ kpxcFill.fillFromUsernameIcon = async function(combination) {
     await kpxc.receiveCredentialsIfNecessary();
     if (kpxc.credentials.length === 0) {
         logDebug('Error: Credential list is empty.');
-        return;
+        return null;
     } else if (kpxc.credentials.length > 1 && kpxc.settings.autoCompleteUsernames) {
         kpxcUserAutocomplete.showList(combination.username || combination.password);
-        return;
+        return null;
     }
 
     await sendMessage('page_set_login_id', kpxc.credentials[0].uuid);
     kpxcFill.fillInCredentials(combination, kpxc.credentials[0].login, kpxc.credentials[0].uuid);
+    return null;
 };
 
 /**
@@ -221,14 +228,15 @@ kpxcFill.fillFromUsernameIcon = async function(combination) {
  * @param {String} uuid Identifier for the entry. There can be identical usernames with different password
  */
 kpxcFill.fillInCredentials = async function(combination, predefinedUsername, uuid, passOnly = false) {
+    debugger;
     if (kpxc.credentials.length === 0) {
         kpxcUI.createNotification('error', tr('credentialsNoLoginsFound'));
-        return;
+        return null;
     }
 
     if (!combination || (!combination.username && !combination.password)) {
         logDebug('Error: Empty login combination.');
-        return;
+        return null;
     }
 
     // Use predefined username as default
@@ -242,7 +250,7 @@ kpxcFill.fillInCredentials = async function(combination, predefinedUsername, uui
     const selectedCredentials = kpxc.credentials.find(c => c.uuid === uuid);
     if (!selectedCredentials) {
         logError('Uuid not found: ' + uuid);
-        return;
+        return null;
     }
 
     // Handle auto-submit
@@ -294,6 +302,8 @@ kpxcFill.fillInCredentials = async function(combination, predefinedUsername, uui
     } else {
         (combination.username || combination.password).focus();
     }
+    
+    return null;
 };
 
 // Fills StringFields defined in Custom Fields

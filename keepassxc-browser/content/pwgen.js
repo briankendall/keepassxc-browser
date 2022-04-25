@@ -72,17 +72,18 @@ PasswordIcon.prototype.createIcon = function(field) {
 
     icon.addEventListener('click', async function(e) {
         if (!e.isTrusted) {
-            return;
+            return null;
         }
 
         e.stopPropagation();
 
         if (await useKeePassXCPasswordGenerator()) {
             kpxcPasswordDialog.generate(null, field);
-            return;
+            return null;
         }
 
         kpxcPasswordDialog.showDialog(field, icon);
+        return null;
     });
 
     icon.addEventListener('mousedown', ev => ev.stopPropagation());
@@ -220,10 +221,11 @@ kpxcPasswordDialog.openDialog = function() {
 kpxcPasswordDialog.trigger = async function() {
     if (await useKeePassXCPasswordGenerator()) {
         kpxcPasswordDialog.generate(null, document.activeElement);
-        return;
+        return null;
     }
 
     kpxcPasswordDialog.showDialog(document.activeElement, kpxcPasswordDialog.icon);
+    return null;
 };
 
 kpxcPasswordDialog.showDialog = function(field, icon) {
@@ -263,7 +265,7 @@ kpxcPasswordDialog.generate = async function(e, field) {
     // This function can be also called from non-events
     if (e) {
         if (!e.isTrusted) {
-            return;
+            return null;
         }
         e.preventDefault();
     }
@@ -274,6 +276,7 @@ kpxcPasswordDialog.generate = async function(e, field) {
     }
 
     callbackGeneratedPassword(await sendMessage('generate_password'));
+    return null;
 };
 
 kpxcPasswordDialog.copy = function(e) {

@@ -26,6 +26,7 @@ async function initSettings() {
         });
         close();
     });
+    return null;
 }
 
 
@@ -39,6 +40,7 @@ async function initColorTheme() {
     } else {
         document.body.setAttribute('data-color-theme', colorTheme);
     }
+    return null;
 }
 
 

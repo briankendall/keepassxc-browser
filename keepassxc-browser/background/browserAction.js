@@ -44,6 +44,7 @@ browserAction.showDefault = async function(tab) {
     }
 
     browserAction.show(tab, popupData);
+    return null;
 };
 
 browserAction.updateIcon = async function(tab, iconType) {
@@ -60,6 +61,7 @@ browserAction.updateIcon = async function(tab, iconType) {
         tabId: tab.id,
         path: browserAction.generateIconName(iconType)
     });
+    return null;
 };
 
 browserAction.generateIconName = function(iconType) {
@@ -83,4 +85,5 @@ browserAction.ignoreSite = async function(url) {
         action: 'ignore_site',
         args: [ url ]
     });
+    return null;
 };

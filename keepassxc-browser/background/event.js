@@ -65,6 +65,7 @@ kpxcEvent.onLoadKeyRing = async function() {
 kpxcEvent.onSaveSettings = async function(tab, settings) {
     browser.storage.local.set({ 'settings': settings });
     kpxcEvent.onLoadSettings(tab);
+    return null;
 };
 
 kpxcEvent.onGetStatus = async function(tab, args = []) {
@@ -144,6 +145,7 @@ kpxcEvent.onRemoveCredentialsFromTabInformation = async function(tab) {
     const id = tab.id || page.currentTabId;
     page.clearCredentials(id);
     page.clearSubmittedCredentials();
+    return null;
 };
 
 kpxcEvent.onLoginPopup = async function(tab, logins) {
@@ -154,10 +156,12 @@ kpxcEvent.onLoginPopup = async function(tab, logins) {
 
     page.tabs[tab.id].loginList = logins;
     browserAction.show(tab, popupData);
+    return null;
 };
 
 kpxcEvent.initHttpAuth = async function() {
     httpAuth.init();
+    return null;
 };
 
 kpxcEvent.onHTTPAuthPopup = async function(tab, data) {
@@ -168,10 +172,12 @@ kpxcEvent.onHTTPAuthPopup = async function(tab, data) {
 
     page.tabs[tab.id].loginList = data;
     browserAction.show(tab, popupData);
+    return null;
 };
 
 kpxcEvent.onUsernameFieldDetected = async function(tab, detected) {
     page.tabs[tab.id].usernameFieldDetected = detected;
+    return null;
 };
 
 kpxcEvent.passwordGetFilled = async function() {
@@ -180,6 +186,7 @@ kpxcEvent.passwordGetFilled = async function() {
 
 kpxcEvent.passwordSetFilled = async function(tab, state) {
     page.passwordFilled = state;
+    return null;
 };
 
 kpxcEvent.getColorTheme = async function(tab) {
@@ -194,6 +201,7 @@ kpxcEvent.pageClearLogins = async function(tab, alreadyCalled) {
     if (!alreadyCalled) {
         page.clearLogins(tab.id);
     }
+    return null;
 };
 
 kpxcEvent.compareVersion = async function(tab, args = []) {
@@ -209,6 +217,7 @@ kpxcEvent.hideGettingStartedGuideAlert = async function(tab) {
     settings.showGettingStartedGuideAlert = false;
 
     await kpxcEvent.onSaveSettings(tab, settings);
+    return null;
 };
 
 kpxcEvent.hideTroubleshootingGuideAlert = async function(tab) {
@@ -216,6 +225,7 @@ kpxcEvent.hideTroubleshootingGuideAlert = async function(tab) {
     settings.showTroubleshootingGuideAlert = false;
 
     await kpxcEvent.onSaveSettings(tab, settings);
+    return null;
 };
 
 // All methods named in this object have to be declared BEFORE this!

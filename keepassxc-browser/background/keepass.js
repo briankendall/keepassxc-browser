@@ -874,6 +874,7 @@ keepass.updateDatabase = async function() {
 
     keepass.updatePopup(configured ? 'normal' : 'locked');
     keepass.updateDatabaseHashToContent();
+    return null;
 };
 
 keepass.updateDatabaseHashToContent = async function() {
@@ -893,6 +894,7 @@ keepass.updateDatabaseHashToContent = async function() {
     } catch (err) {
         logError(`updateDatabaseHashToContent failed: ${err}`);
     }
+    return null;
 };
 
 keepass.compareVersion = function(minimum, current, canBeEqual = true) {

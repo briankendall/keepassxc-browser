@@ -130,12 +130,13 @@ TOTPFieldIcon.prototype.createIcon = function(field, segmented = false) {
 
     icon.addEventListener('click', async function(e) {
         if (!e.isTrusted) {
-            return;
+            return null;
         }
 
         e.stopPropagation();
         await kpxc.receiveCredentialsIfNecessary();
         kpxcFill.fillFromTOTP(field);
+        return null;
     });
 
     icon.addEventListener('mousedown', ev => ev.stopPropagation());

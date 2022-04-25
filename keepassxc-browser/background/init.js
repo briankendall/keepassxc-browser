@@ -64,6 +64,7 @@ browser.tabs.onActivated.addListener(async function(activeInfo) {
     } catch (err) {
         logError(err.message);
     }
+    return null;
 });
 
 /**

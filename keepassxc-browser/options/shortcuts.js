@@ -128,6 +128,7 @@ $(async function() {
     } catch (err) {
         console.log('Error loading options page: ' + err);
     }
+    return null;
 });
 
 const saveButtons = document.querySelectorAll('.btn-primary');
@@ -152,6 +153,7 @@ async function updateKeys() {
             elem.value = c.shortcut;
         }
     }
+    return null;
 }
 
 async function updateShortcut(shortcut) {
@@ -165,12 +167,14 @@ async function updateShortcut(shortcut) {
         console.log('Cannot change shortcut: ' + err);
         createBanner('danger', shortcut);
     }
+    return null;
 }
 
 async function resetShortcut(shortcut) {
     await browser.commands.reset(shortcut);
     createBanner('info', shortcut);
     updateKeys();
+    return null;
 }
 
 // Possible types: success, info, danger

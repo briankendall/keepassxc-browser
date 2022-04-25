@@ -3,7 +3,7 @@
 class CredentialAutocomplete extends Autocomplete {}
 CredentialAutocomplete.prototype.click = async function(e) {
     if (!e.isTrusted) {
-        return;
+        return null;
     }
 
     e.stopPropagation();
@@ -13,11 +13,12 @@ CredentialAutocomplete.prototype.click = async function(e) {
         await this.showList(field);
         this.updateSearch();
     }
+    return null;
 };
 
 CredentialAutocomplete.prototype.itemClick = async function(e, input, uuid) {
     if (!e.isTrusted) {
-        return;
+        return null;
     }
 
     e.stopPropagation();
@@ -28,11 +29,13 @@ CredentialAutocomplete.prototype.itemClick = async function(e, input, uuid) {
 
     this.closeList();
     input.focus();
+    return null;
 };
 
 CredentialAutocomplete.prototype.itemEnter = async function(index, elements) {
     const usernameValue = elements[index].value;
     this.fillPassword(usernameValue, index, elements[index].uuid);
+    return null;
 };
 
 CredentialAutocomplete.prototype.fillPassword = async function(value, index, uuid) {
@@ -43,6 +46,7 @@ CredentialAutocomplete.prototype.fillPassword = async function(value, index, uui
 
     const manualFill = await sendMessage('page_get_manual_fill');
     await kpxcFill.fillInCredentials(combination, value, uuid, manualFill === ManualFill.PASSWORD);
+    return null;
 };
 
 const kpxcUserAutocomplete = new CredentialAutocomplete();

@@ -95,6 +95,7 @@ kpxcObserverHelper.initObserver = async function() {
     if (document.body) {
         kpxc.observer.observe(document.body, kpxcObserverHelper.observerConfig);
     }
+    return null;
 };
 
 // Stores mutation style to an cache array
@@ -193,18 +194,18 @@ kpxcObserverHelper.alreadyIdentified = function(target) {
 // Adds elements to a monitor array. Identifies the input fields.
 kpxcObserverHelper.handleObserverAdd = async function(target) {
     if (kpxcObserverHelper.ignoredElement(target)) {
-        return;
+        return null;
     }
 
     // Sometimes the settings haven't been loaded before new input fields are detected
     if (Object.keys(kpxc.settings).length === 0) {
         kpxc.init();
-        return;
+        return null;
     }
 
     const inputs = kpxcObserverHelper.getInputs(target);
     if (inputs.length === 0) {
-        return;
+        return null;
     }
 
     await kpxc.initCombinations(inputs);
@@ -213,11 +214,12 @@ kpxcObserverHelper.handleObserverAdd = async function(target) {
     if (kpxc.databaseState === DatabaseState.UNLOCKED) {
         if (_called.retrieveCredentials === false) {
             await kpxc.retrieveCredentials();
-            return;
+            return null;
         }
 
         kpxc.prepareCredentials();
     }
+    return null;
 };
 
 // Removes monitored elements

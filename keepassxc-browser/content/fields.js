@@ -155,7 +155,7 @@ kpxcFields.getCombination = async function(field, givenType) {
         }
     }
 
-    return undefined;
+    return null;
 };
 
 // Sets and returns unique ID's for the element
@@ -353,7 +353,7 @@ kpxcFields.useCustomLoginFields = async function() {
     const location = kpxc.getDocumentLocation();
     const creds = kpxc.settings['defined-custom-fields'][location];
     if (!creds.username && !creds.password && !creds.totp && creds.fields.length === 0) {
-        return;
+        return null;
     }
 
     // Finds the input field based on the stored ID
