@@ -351,6 +351,16 @@ Element.prototype.attachShadow = function () {
     }
 };
 
+function _shadowSelector(value) {
+    return this.shadowRoot ? this.shadowRoot.querySelector(value) : undefined;
+}
+
+function _shadowSelectorAll(value) {
+    return this.shadowRoot ? this.shadowRoot.querySelectorAll(value) : undefined;
+}
+
+/*
+// Needed to disable this for Orion
 Object.prototype.shadowSelector = function(value) {
     return this.shadowRoot ? this.shadowRoot.querySelector(value) : undefined;
 };
@@ -358,3 +368,4 @@ Object.prototype.shadowSelector = function(value) {
 Object.prototype.shadowSelectorAll = function(value) {
     return this.shadowRoot ? this.shadowRoot.querySelectorAll(value) : undefined;
 };
+*/

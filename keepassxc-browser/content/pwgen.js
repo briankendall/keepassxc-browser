@@ -118,6 +118,8 @@ kpxcPasswordDialog.diffX = 0;
 kpxcPasswordDialog.diffY = 0;
 kpxcPasswordDialog.dialog = null;
 kpxcPasswordDialog.titleBar = null;
+kpxcPasswordDialog.shadowSelector = _shadowSelector
+kpxcPasswordDialog.shadowSelectorAll = _shadowSelectorAll
 
 kpxcPasswordDialog.createDialog = function() {
     if (kpxcPasswordDialog.created) {

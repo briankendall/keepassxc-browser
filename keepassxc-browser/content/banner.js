@@ -7,6 +7,8 @@ kpxcBanner.banner = undefined;
 kpxcBanner.created = false;
 kpxcBanner.credentials = {};
 kpxcBanner.wrapper = undefined;
+kpxcBanner.shadowSelector = _shadowSelector
+kpxcBanner.shadowSelectorAll = _shadowSelectorAll
 
 kpxcBanner.destroy = async function() {
     if (!kpxcBanner.created) {
